@@ -1,3 +1,8 @@
+%define libname %mklibname snapper
+%define devname %mklibname -d snapper
+
+%global snapper_svcs snapper-boot.service snapper-boot.timer snapper-cleanup.service snapper-cleanup.timer snapper-timeline.service snapper-timeline.timer snapperd.service
+
 Summary:	Tool for filesystem snapshot management
 Name:		snapper
 Version:	0.10.4
@@ -30,15 +35,34 @@ BuildRequires:  pkgconfig(ncurses)
 BuildRequires:  pkgconfig(pam)
 
 Requires:       diffutils
+Requires:       %{libname} = %{version}-%{release}
 
 %description
 Manage filesystem snapshots and allow undo of system modifications
+
+%package -n %{libname}
+Summary:        Shared library for %{name}
+
+%description -n %{libname}
+This package contains the snapper shared library
+for filesystem snapshot management.
+Requires:	%{name} = %{version}-%{release}
+Requires:       util-linux
+Requires:       btrfs-progs
+
+%package -n %{devname}
+Summary:        Development files for %{name}
+Requires:	%{libname} = %{version}-%{release}
+Requires: %{name} = %{version}-%{release}
+
+%description -n %{devname}
+This package contains header files and documentation for developing with snapper.
 
 %prep
 %autosetup -p1
 # use libexecdir
 find -type f -exec sed -i -e "s|/usr/lib/snapper|%{_libexecdir}/%{name}|g" {} ';'
- 
+
 %build
 autoreconf -vfi
 %configure \
@@ -49,6 +73,59 @@ autoreconf -vfi
 %install
 %make_install
 
+rm -rf %{buildroot}%{_sysconfdir}/cron.hourly
+rm -rf %{buildroot}%{_sysconfdir}/cron.daily
+
+%post
+%systemd_post %{snapper_svcs}
+ 
+%preun
+%systemd_preun %{snapper_svcs}
+ 
+%postun
+%systemd_postun_with_restart %{snapper_svcs}
+
 %find_lang %{name}
 
 %files -f snapper.lang
+%doc %{_datadir}/doc/snapper/AUTHORS
+%doc %{_datadir}/doc/snapper/COPYING
+%{_bindir}/mksubvolume
+%{_bindir}/snapper
+%{_bindir}/snapperd
+%{_sysconfdir}/logrotate.d/snapper
+%{_libexecdir}/%{name}/installation-helper
+%{_libexecdir}/%{name}/systemd-helper
+%{_datadir}/bash-completion/completions/snapper
+%{_datadir}/dbus-1/system-services/org.opensuse.Snapper.service
+%{_datadir}/dbus-1/system.d/org.opensuse.Snapper.conf
+%{_datadir}/snapper/config-templates/default
+%{_datadir}/snapper/filters/base.txt
+%{_datadir}/snapper/filters/lvm.txt
+%{_datadir}/snapper/filters/x11.txt
+%{_datadir}/snapper/zypp-plugin.conf
+%{_prefix}/lib/systemd/system/snapper-boot.service
+%{_prefix}/lib/systemd/system/snapper-boot.timer
+%{_prefix}/lib/systemd/system/snapper-cleanup.service
+%{_prefix}/lib/systemd/system/snapper-cleanup.timer
+%{_prefix}/lib/systemd/system/snapper-timeline.service
+%{_prefix}/lib/systemd/system/snapper-timeline.timer
+%{_prefix}/lib/systemd/system/snapperd.service
+%{_prefix}/lib/pam_snapper/
+%{_prefix}/lib/zypp/plugins/commit/snapper-zypp-plugin
+%{_mandir}/man5/snapper-configs.5.*
+%{_mandir}/man5/snapper-zypp-plugin.conf.5.*
+%{_mandir}/man8/mksubvolume.8.*
+%{_mandir}/man8/pam_snapper.8.*
+%{_mandir}/man8/snapper-zypp-plugin.8.*
+%{_mandir}/man8/snapper.8.*
+%{_mandir}/man8/snapperd.8.*
+
+%files -n %{libname}
+%{_libdir}/libsnapper.so.*
+%{_libdir}/security/pam_snapper.so
+
+%files -n %{devname}
+%{_libdir}/libsnapper.so
+%{_libdir}/snapper/testsuite/CAUTION
+%{_includedir}/%{name}/
