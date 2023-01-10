@@ -85,9 +85,9 @@ rm -rf %{buildroot}%{_sysconfdir}/cron.daily
 %postun
 %systemd_postun_with_restart %{snapper_svcs}
 
-#find_lang %{name}
+%{find_lang} snapper
 
-%files
+%files -f snapper.lang
 %doc %{_datadir}/doc/snapper/AUTHORS
 %doc %{_datadir}/doc/snapper/COPYING
 %{_bindir}/mksubvolume
@@ -127,5 +127,5 @@ rm -rf %{buildroot}%{_sysconfdir}/cron.daily
 
 %files -n %{devname}
 %{_libdir}/libsnapper.so
-%{_libdir}/snapper/testsuite/CAUTION
+%{_libdir}/snapper/testsuite/
 %{_includedir}/%{name}/
