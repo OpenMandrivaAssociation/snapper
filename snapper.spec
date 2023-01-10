@@ -32,3 +32,17 @@ Requires:       diffutils
 
 %description
 Manage filesystem snapshots and allow undo of system modifications
+
+%prep
+%autosetup -p1
+
+ 
+%build
+autoreconf -vfi
+%configure
+%make_build
+
+%install
+%make_install
+
+%files
