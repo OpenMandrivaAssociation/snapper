@@ -36,14 +36,17 @@ Manage filesystem snapshots and allow undo of system modifications
 
 %prep
 %autosetup -p1
-
+# use libexecdir
+find -type f -exec sed -i -e "s|/usr/lib/snapper|%{_libexecdir}/%{name}|g" {} ';'
  
 %build
 autoreconf -vfi
-%configure
+%configure \
+           --enable-ext4 \
+           --enable-zypp
 %make_build
 
 %install
 %make_install
 
-%files
+%files -f snapper.lang
