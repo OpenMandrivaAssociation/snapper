@@ -27,6 +27,7 @@ BuildRequires:  pkgconfig(libacl)
 BuildRequires:  pkgconfig(ext2fs)
 BuildRequires:  pkgconfig(json-c)
 BuildRequires:  pkgconfig(ncurses)
+BuildRequires:  pkgconfig(pam)
 
 Requires:       diffutils
 
