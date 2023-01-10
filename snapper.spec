@@ -85,9 +85,9 @@ rm -rf %{buildroot}%{_sysconfdir}/cron.daily
 %postun
 %systemd_postun_with_restart %{snapper_svcs}
 
-%{find_lang} snapper
+#{find_lang} snapper
 
-%files -f snapper.lang
+%files
 %doc %{_datadir}/doc/snapper/AUTHORS
 %doc %{_datadir}/doc/snapper/COPYING
 %{_bindir}/mksubvolume
@@ -120,6 +120,8 @@ rm -rf %{buildroot}%{_sysconfdir}/cron.daily
 %{_mandir}/man8/snapper-zypp-plugin.8.*
 %{_mandir}/man8/snapper.8.*
 %{_mandir}/man8/snapperd.8.*
+# Locales here bc my mind fog...
+%{_datadir}/locale/*/LC_MESSAGES/snapper.mo
 
 %files -n %{libname}
 %{_libdir}/libsnapper.so.*
