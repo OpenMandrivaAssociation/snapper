@@ -49,4 +49,6 @@ autoreconf -vfi
 %install
 %make_install
 
+%find_lang %{name}
+
 %files -f snapper.lang
