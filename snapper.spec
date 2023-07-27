@@ -104,6 +104,7 @@ rm -rf %{buildroot}%{_sysconfdir}/cron.daily
 %{_datadir}/snapper/filters/lvm.txt
 %{_datadir}/snapper/filters/x11.txt
 %{_datadir}/snapper/zypp-plugin.conf
+%{_datadir}/zsh/site-functions/_snapper
 %{_prefix}/lib/systemd/system/snapper-boot.service
 %{_prefix}/lib/systemd/system/snapper-boot.timer
 %{_prefix}/lib/systemd/system/snapper-cleanup.service
