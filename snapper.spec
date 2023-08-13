@@ -6,7 +6,7 @@
 Summary:	Tool for filesystem snapshot management
 Name:		snapper
 Version:	0.10.5
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		Archiving/Backup
 Url:		http://snapper.io
