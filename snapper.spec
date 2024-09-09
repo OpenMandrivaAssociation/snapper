@@ -5,7 +5,7 @@
 
 Summary:	Tool for filesystem snapshot management
 Name:		snapper
-Version:	0.11.1
+Version:	0.11.2
 Release:	1
 License:	GPLv2+
 Group:		Archiving/Backup
