@@ -9,7 +9,7 @@ Version:	0.11.2
 Release:	2
 License:	GPLv2+
 Group:		Archiving/Backup
-Url:		http://snapper.io
+Url:		https://snapper.io
 Source0:  https://github.com/openSUSE/snapper/archive/v%{version}/%{name}-%{version}.tar.gz
 
 BuildRequires:  autoconf
