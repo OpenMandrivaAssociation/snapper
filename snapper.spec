@@ -93,6 +93,7 @@ rm -rf %{buildroot}%{_sysconfdir}/cron.daily
 %{_bindir}/mksubvolume
 %{_bindir}/snapper
 %{_bindir}/snapperd
+%{_bindir}/snbk
 %{_sysconfdir}/logrotate.d/snapper
 %{_libexecdir}/%{name}/installation-helper
 %{_libexecdir}/%{name}/systemd-helper
