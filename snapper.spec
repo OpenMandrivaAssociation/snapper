@@ -105,6 +105,8 @@ rm -rf %{buildroot}%{_sysconfdir}/cron.daily
 %{_datadir}/snapper/filters/x11.txt
 %{_datadir}/snapper/zypp-plugin.conf
 %{_datadir}/zsh/site-functions/_snapper
+%{_prefix}/lib/systemd/system/snapper-backup.service
+%{_prefix}/lib/systemd/system/snapper-backup.timer
 %{_prefix}/lib/systemd/system/snapper-boot.service
 %{_prefix}/lib/systemd/system/snapper-boot.timer
 %{_prefix}/lib/systemd/system/snapper-cleanup.service
@@ -114,6 +116,7 @@ rm -rf %{buildroot}%{_sysconfdir}/cron.daily
 %{_prefix}/lib/systemd/system/snapperd.service
 %{_prefix}/lib/pam_snapper/
 %{_prefix}/lib/zypp/plugins/commit/snapper-zypp-plugin
+%{_mandir}/man5/snapper-backup-configs.5.*
 %{_mandir}/man5/snapper-configs.5.*
 %{_mandir}/man5/snapper-zypp-plugin.conf.5.*
 %{_mandir}/man8/mksubvolume.8.*
@@ -121,6 +124,7 @@ rm -rf %{buildroot}%{_sysconfdir}/cron.daily
 %{_mandir}/man8/snapper-zypp-plugin.8.*
 %{_mandir}/man8/snapper.8.*
 %{_mandir}/man8/snapperd.8.*
+%{_mandir}/man8/snbk.8.*
 # Locales here bc my mind fog...
 %{_datadir}/locale/*/LC_MESSAGES/snapper.mo
 
