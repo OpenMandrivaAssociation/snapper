@@ -17,6 +17,7 @@ BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  gettext
 BuildRequires:  make
+BuildRequires:  slibtool
 BuildRequires:  systemd-rpm-macros
 BuildRequires:  xsltproc
 BuildRequires:  docbook-xsl
