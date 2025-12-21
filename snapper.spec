@@ -12,6 +12,7 @@ Group:		Archiving/Backup
 Url:		https://snapper.io
 Source0:  https://github.com/openSUSE/snapper/archive/v%{version}/%{name}-%{version}.tar.gz
 
+BuildRequires:	libtool-base
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  libtool
