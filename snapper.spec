@@ -5,78 +5,78 @@
 
 Summary:	Tool for filesystem snapshot management
 Name:		snapper
-Version:	0.12.1
-Release:	4
+Version:	0.13.1
+Release:	1
 License:	GPLv2+
-Group:		Archiving/Backup
+Group:	Archiving/Backup
 Url:		https://snapper.io
 Source0:  https://github.com/openSUSE/snapper/archive/v%{version}/%{name}-%{version}.tar.gz
-
-BuildRequires:	libtool-base
-BuildRequires:  autoconf
-BuildRequires:  automake
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	docbook-xsl
+BuildRequires:	gettext
 BuildRequires:  libtool
-BuildRequires:  gettext
-BuildRequires:  make
-BuildRequires:  slibtool
-BuildRequires:  systemd-rpm-macros
-BuildRequires:  xsltproc
-BuildRequires:  docbook-xsl
-
-# devels
-BuildRequires:  boost-devel
-BuildRequires:  pkgconfig(libbtrfsutil)
-BuildRequires:  pkgconfig(mount)
-BuildRequires:  pkgconfig(libselinux)
-BuildRequires:  pkgconfig(dbus-1)
-BuildRequires:  pkgconfig(libxml-2.0)
-BuildRequires:  pkgconfig(libacl)
-BuildRequires:  pkgconfig(ext2fs)
-BuildRequires:  pkgconfig(json-c)
-BuildRequires:  pkgconfig(ncurses)
-BuildRequires:  pkgconfig(pam)
-
-Requires:       diffutils
-Requires:       %{libname} = %{version}-%{release}
+BuildRequires:	libtool-base
+BuildRequires:	make
+#BuildRequires:	slibtool
+BuildRequires:	systemd-rpm-macros
+BuildRequires:	xsltproc
+BuildRequires:	boost-devel
+BuildRequires:	pkgconfig(dbus-1)
+BuildRequires:	pkgconfig(ext2fs)
+BuildRequires:	pkgconfig(json-c)
+BuildRequires:	pkgconfig(libacl)
+BuildRequires:	pkgconfig(libbtrfsutil)
+BuildRequires:	pkgconfig(libselinux)
+BuildRequires:	pkgconfig(libxml-2.0)
+BuildRequires:	pkgconfig(mount)
+BuildRequires:	pkgconfig(ncurses)
+BuildRequires:	pkgconfig(pam)
+BuildRequires:	pkgconfig(zlib)
+Requires:	diffutils
+Requires:	logrotate
+Requires:	%{libname} = %{version}-%{release}
 
 %description
-Manage filesystem snapshots and allow undo of system modifications
+Manage filesystem snapshots and allow undo of system modifications.
 
-%package -n %{libname}
-Summary:        Shared library for %{name}
+%files -f %{name}.lang
+%license COPYING
+%doc AUTHORS README.md
+#%%{_datadir}/doc/%%{name}/AUTHORS
+#doc %%{_datadir}/doc/%%{name}/COPYING
+%{_sysconfdir}/logrotate.d/%{name}
+%{_bindir}/mksubvolume
+%{_bindir}/%{name}
+%{_bindir}/snapperd
+%{_bindir}/snbk
+%{_libexecdir}/%{name}/installation-helper
+%{_libexecdir}/%{name}/systemd-helper
+%{_datadir}/%{name}/config-templates/default
+%{_datadir}/%{name}/filters/*.txt
+%{_datadir}/%{name}/zypp-plugin.conf
+%{_datadir}/bash-completion/completions/%{name}
+%{_datadir}/bash-completion/completions/snbk
+%{_datadir}/dbus-1/system-services/org.opensuse.Snapper.service
+%{_datadir}/dbus-1/system.d/org.opensuse.Snapper.conf
+%{_datadir}/zsh/site-functions/_%{name}
+%{_unitdir}/%{name}-*.service
+%{_unitdir}/%{name}-*.timer
+%{_unitdir}/snapperd.service
+%{_prefix}/lib/pam_%{name}/*.sh
+%{_prefix}/lib/zypp/plugins/commit/%{name}-zypp-plugin
+%{_mandir}/man5/%{name}-backup-configs.5.*
+%{_mandir}/man5/%{name}-configs.5.*
+%{_mandir}/man5/%{name}-zypp-plugin.conf.5.*
+%{_mandir}/man8/mksubvolume.8.*
+%{_mandir}/man8/pam_snapper.8.*
+%{_mandir}/man8/%{name}-zypp-plugin.8.*
+%{_mandir}/man8/%{name}.8.*
+%{_mandir}/man8/snapperd.8.*
+%{_mandir}/man8/snbk.8.*
+# Locales here bc my mind fog...
+#{_datadir}/locale/*/LC_MESSAGES/%%{name}.mo
 
-%description -n %{libname}
-This package contains the snapper shared library
-for filesystem snapshot management.
-Requires:	%{name} = %{version}-%{release}
-Requires:       util-linux
-Requires:       btrfs-progs
-
-%package -n %{devname}
-Summary:        Development files for %{name}
-Requires:	%{libname} = %{version}-%{release}
-Requires: %{name} = %{version}-%{release}
-
-%description -n %{devname}
-This package contains header files and documentation for developing with snapper.
-
-%prep
-%autosetup -p1
-# use libexecdir
-find -type f -exec sed -i -e "s|/usr/lib/snapper|%{_libexecdir}/%{name}|g" {} ';'
-
-%build
-autoreconf -vfi
-%configure \
-           --enable-ext4 \
-           --enable-zypp
-%make_build
-
-%install
-%make_install
-
-rm -rf %{buildroot}%{_sysconfdir}/cron.hourly
-rm -rf %{buildroot}%{_sysconfdir}/cron.daily
 
 %post
 %systemd_post %{snapper_svcs}
@@ -87,55 +87,75 @@ rm -rf %{buildroot}%{_sysconfdir}/cron.daily
 %postun
 %systemd_postun_with_restart %{snapper_svcs}
 
-#{find_lang} snapper
+#-----------------------------------------------------------------------------
 
-%files
-%doc %{_datadir}/doc/snapper/AUTHORS
-%doc %{_datadir}/doc/snapper/COPYING
-%{_bindir}/mksubvolume
-%{_bindir}/snapper
-%{_bindir}/snapperd
-%{_bindir}/snbk
-%{_sysconfdir}/logrotate.d/snapper
-%{_libexecdir}/%{name}/installation-helper
-%{_libexecdir}/%{name}/systemd-helper
-%{_datadir}/bash-completion/completions/snapper
-%{_datadir}/dbus-1/system-services/org.opensuse.Snapper.service
-%{_datadir}/dbus-1/system.d/org.opensuse.Snapper.conf
-%{_datadir}/snapper/config-templates/default
-%{_datadir}/snapper/filters/base.txt
-%{_datadir}/snapper/filters/lvm.txt
-%{_datadir}/snapper/filters/x11.txt
-%{_datadir}/snapper/zypp-plugin.conf
-%{_datadir}/zsh/site-functions/_snapper
-%{_prefix}/lib/systemd/system/snapper-backup.service
-%{_prefix}/lib/systemd/system/snapper-backup.timer
-%{_prefix}/lib/systemd/system/snapper-boot.service
-%{_prefix}/lib/systemd/system/snapper-boot.timer
-%{_prefix}/lib/systemd/system/snapper-cleanup.service
-%{_prefix}/lib/systemd/system/snapper-cleanup.timer
-%{_prefix}/lib/systemd/system/snapper-timeline.service
-%{_prefix}/lib/systemd/system/snapper-timeline.timer
-%{_prefix}/lib/systemd/system/snapperd.service
-%{_prefix}/lib/pam_snapper/
-%{_prefix}/lib/zypp/plugins/commit/snapper-zypp-plugin
-%{_mandir}/man5/snapper-backup-configs.5.*
-%{_mandir}/man5/snapper-configs.5.*
-%{_mandir}/man5/snapper-zypp-plugin.conf.5.*
-%{_mandir}/man8/mksubvolume.8.*
-%{_mandir}/man8/pam_snapper.8.*
-%{_mandir}/man8/snapper-zypp-plugin.8.*
-%{_mandir}/man8/snapper.8.*
-%{_mandir}/man8/snapperd.8.*
-%{_mandir}/man8/snbk.8.*
-# Locales here bc my mind fog...
-%{_datadir}/locale/*/LC_MESSAGES/snapper.mo
+%package -n %{libname}
+Summary:		Shared library for %{name}
+Group:	System/Libraries
+# Circular dep
+#Requires:	%%{name} = %%{version}-%%{release}
+Requires:	util-linux
+Requires:	btrfs-progs
+
+%description -n %{libname}
+This package contains the snapper shared library for filesystem snapshot
+management.
 
 %files -n %{libname}
 %{_libdir}/libsnapper.so.*
 %{_libdir}/security/pam_snapper.so
 
+#-----------------------------------------------------------------------------
+
+%package -n %{devname}
+Summary:		Development files for %{name}
+Group:	Development/C++
+Requires:	%{libname} = %{version}-%{release}
+#Requires:	%%{name} = %%{version}-%%{release}
+
+%description -n %{devname}
+This package contains header files and documentation for developing
+with snapper.
+
 %files -n %{devname}
 %{_libdir}/libsnapper.so
 %{_libdir}/snapper/testsuite/
 %{_includedir}/%{name}/
+
+#-----------------------------------------------------------------------------
+
+%prep
+%autosetup -p1
+
+# use libexecdir
+find -type f -exec sed -i -e "s|/usr/lib/snapper|%{_libexecdir}/%{name}|g" {} ';'
+
+# Fix FSF address
+sed -i 's/51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA/31 Milk Street, # 960789, Boston, MA 02196, USA/g' COPYING
+
+
+%build
+# Slibtool won't work with snapper
+ln -sf %{_bindir}/libtoolize slibtoolize
+export PATH=$PWD:$PATH
+export LIBTOOLIZE=%{_bindir}/libtoolize
+export LIBTOOL=%{_bindir}/libtool
+autoreconf -vfi
+%configure --enable-selinux
+
+%make_build
+
+
+%install
+%make_install
+
+# Not interesting stuff
+rm -rf %{buildroot}%{_sysconfdir}/cron.hourly
+rm -rf %{buildroot}%{_sysconfdir}/cron.daily
+
+# We pick them with our macro
+rm -f %{buildroot}%{_docdir}/%{name}/AUTHORS
+rm -f %{buildroot}%{_docdir}/%{name}/COPYING
+
+
+%{find_lang} snapper
