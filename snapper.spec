@@ -45,7 +45,8 @@ Manage filesystem snapshots and allow undo of system modifications.
 %doc AUTHORS README.md
 #%%{_datadir}/doc/%%{name}/AUTHORS
 #doc %%{_datadir}/doc/%%{name}/COPYING
-%{_sysconfdir}/logrotate.d/%{name}
+%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
+%config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %{_bindir}/mksubvolume
 %{_bindir}/%{name}
 %{_bindir}/snapperd
