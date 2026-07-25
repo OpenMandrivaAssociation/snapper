@@ -6,7 +6,7 @@
 Summary:	Tool for filesystem snapshot management
 Name:		snapper
 Version:	0.13.1
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:	Archiving/Backup
 Url:		https://snapper.io
@@ -45,7 +45,8 @@ Manage filesystem snapshots and allow undo of system modifications.
 %doc AUTHORS README.md
 #%%{_datadir}/doc/%%{name}/AUTHORS
 #doc %%{_datadir}/doc/%%{name}/COPYING
-%{_sysconfdir}/logrotate.d/%{name}
+%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
+%config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %{_bindir}/mksubvolume
 %{_bindir}/%{name}
 %{_bindir}/snapperd
@@ -148,6 +149,9 @@ autoreconf -vfi
 
 %install
 %make_install
+
+# Install provided sysconfig file (needed by btrfs assistant GUI)
+install -Dpm0644 data/sysconfig.snapper %{buildroot}%{_sysconfdir}/sysconfig/%{name}
 
 # Not interesting stuff
 rm -rf %{buildroot}%{_sysconfdir}/cron.hourly
