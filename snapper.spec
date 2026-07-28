@@ -6,7 +6,7 @@
 Summary:	Tool for filesystem snapshot management
 Name:		snapper
 Version:	0.13.1
-Release:	2
+Release:	3
 License:	GPLv2+
 Group:	Archiving/Backup
 Url:		https://snapper.io
@@ -43,10 +43,9 @@ Manage filesystem snapshots and allow undo of system modifications.
 %files -f %{name}.lang
 %license COPYING
 %doc AUTHORS README.md
-#%%{_datadir}/doc/%%{name}/AUTHORS
-#doc %%{_datadir}/doc/%%{name}/COPYING
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
+%dir %{_sysconfdir}/%{name}/configs
 %{_bindir}/mksubvolume
 %{_bindir}/%{name}
 %{_bindir}/snapperd
@@ -75,8 +74,6 @@ Manage filesystem snapshots and allow undo of system modifications.
 %{_mandir}/man8/%{name}.8.*
 %{_mandir}/man8/snapperd.8.*
 %{_mandir}/man8/snbk.8.*
-# Locales here bc my mind fog...
-#{_datadir}/locale/*/LC_MESSAGES/%%{name}.mo
 
 
 %post
@@ -153,6 +150,9 @@ autoreconf -vfi
 # Install provided sysconfig file (needed by btrfs assistant GUI)
 install -Dpm0644 data/sysconfig.snapper %{buildroot}%{_sysconfdir}/sysconfig/%{name}
 
+# Create the needed dir for storing configs
+mkdir -p %{buildroot}%{_sysconfdir}/%{name}/configs
+
 # Not interesting stuff
 rm -rf %{buildroot}%{_sysconfdir}/cron.hourly
 rm -rf %{buildroot}%{_sysconfdir}/cron.daily
@@ -162,4 +162,4 @@ rm -f %{buildroot}%{_docdir}/%{name}/AUTHORS
 rm -f %{buildroot}%{_docdir}/%{name}/COPYING
 
 
-%{find_lang} snapper
+%{find_lang} %{name}
